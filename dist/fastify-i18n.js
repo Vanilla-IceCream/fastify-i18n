@@ -1,9 +1,9 @@
-import f from "fastify-plugin";
-import g from "node-polyglot";
-const b = f(
+import r from "fastify-plugin";
+import f from "node-polyglot";
+const b = r(
   async (l, e) => {
-    l.decorate("fallbackLocale", e.fallbackLocale), l.addHook("preParsing", async (c, r) => {
-      const a = new g(), s = c.headers["accept-language"], o = Object.entries(e.messages);
+    l.decorate("fallbackLocale", e.fallbackLocale), l.addHook("preParsing", async (c, g) => {
+      const a = new f(), s = c.headers["accept-language"], o = Object.entries(e.messages);
       for (let n = 0; n < o.length; n++) {
         const [t, i] = o[n];
         t === s && (a.locale(t), a.extend(i));
@@ -16,8 +16,8 @@ const b = f(
     name: "fastify-i18n"
   }
 ), k = (l, e) => {
-  l.addHook("preParsing", async (c, r) => {
-    const a = new g(), s = c.headers["accept-language"], o = Object.entries(e);
+  l.addHook("preParsing", async (c, g) => {
+    const a = new f(), s = c.headers["accept-language"], o = Object.entries(e);
     for (let n = 0; n < o.length; n++) {
       const [t, i] = o[n];
       t === s && (a.locale(t), a.extend(i));

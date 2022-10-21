@@ -14,6 +14,14 @@ $ yarn add fastify-i18n
 
 ## Usage
 
+```js
+// esm
+import i18n, { defineI18n, useI18n } from 'fastify-i18n';
+
+// cjs
+const { default: i18n, defineI18n, useI18n } = require('fastify-i18n');
+```
+
 Global scope:
 
 ```ts

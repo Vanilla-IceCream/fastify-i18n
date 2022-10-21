@@ -5,19 +5,15 @@ import dts from 'vite-plugin-dts';
 export default defineConfig({
   build: {
     lib: {
-      entry: resolve(__dirname, 'src/index.ts'),
-      name: 'FastifyI18n',
-      fileName: 'fastify-i18n',
+      entry: resolve(__dirname, 'src/fastify-i18n.ts'),
+      formats: ['es', 'cjs'],
     },
     rollupOptions: {
       external: ['fastify-plugin', 'node-polyglot'],
       output: {
-        globals: {
-          'fastify-plugin': 'FastifyPlugin',
-          'node-polyglot': 'NodePolyglot',
-        },
+        exports: 'named',
       },
     },
   },
-  plugins: [dts({ insertTypesEntry: true })],
+  plugins: [dts()],
 });

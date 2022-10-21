@@ -1,8 +1,8 @@
 {
   "name": "fastify-i18n",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Internationalization plugin for Fastify. Built upon node-polyglot.",
-  "main": "./dist/fastify-i18n.umd.cjs",
+  "main": "./dist/fastify-i18n.cjs",
   "module": "./dist/fastify-i18n.js",
   "types": "./dist/fastify-i18n.d.ts",
   "type": "module",
@@ -12,7 +12,7 @@
   "exports": {
     ".": {
       "import": "./dist/fastify-i18n.js",
-      "require": "./dist/fastify-i18n.umd.cjs"
+      "require": "./dist/fastify-i18n.cjs"
     }
   },
   "scripts": {
