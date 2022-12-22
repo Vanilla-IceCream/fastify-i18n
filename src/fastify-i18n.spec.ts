@@ -62,6 +62,14 @@ test('fastify-i18n', async ({ app }) => {
   });
 
   expect(res3.json()).toEqual({ hello: 'こんにちは世界！' });
+
+  const res4 = await app.inject({
+    method: 'GET',
+    url: '/api/hello-world',
+    headers: { 'accept-language': 'ja,ko;q=0.9,zh-TW;q=0.8,zh;q=0.7,en-US;q=0.6,en;q=0.5' },
+  });
+
+  expect(res4.json()).toEqual({ hello: 'こんにちは世界！' });
 });
 
 afterEach(async (ctx) => {

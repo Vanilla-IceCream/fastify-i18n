@@ -7,9 +7,11 @@ Internationalization plugin for Fastify. Built upon [`node-polyglot`](https://gi
 ```bash
 $ npm i fastify-i18n
 # or
+$ yarn add fastify-i18n
+# or
 $ pnpm i fastify-i18n
 # or
-$ yarn add fastify-i18n
+$ bun add fastify-i18n
 ```
 
 ## Usage
@@ -43,7 +45,7 @@ fastify.register(i18n, {
     --header 'accept-language: ja'
   */
 fastify.get('/api/i18n', async (req, reply) => {
-  return { message: req.i18n.t('text') };
+  return reply.send({ message: req.i18n.t('text') });
 });
 ```
 
@@ -69,13 +71,13 @@ export default async (app: FastifyInstance) => {
   app.get('/hello-world', async (req, reply) => {
     const i18n = useI18n(req);
 
-    return {
+    return reply.send({
       // local scope
       hello: i18n.t('hello'),
 
       // global scope
       text: req.i18n.t('text'),
-    };
+    });
   });
 };
 ```
