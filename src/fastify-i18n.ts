@@ -32,8 +32,7 @@ export default plugin<FastifyI18nOptions>(
       const curLang = langs.find((item) => item.startsWith(lang) || lang.startsWith(item));
 
       i18n.locale(curLang);
-      // @ts-expect-error
-      i18n.extend(options.messages[curLang]);
+      i18n.extend(options.messages[curLang || options.fallbackLocale]);
 
       req.i18n = i18n;
     });
@@ -54,8 +53,7 @@ export const defineI18n = (fastify: FastifyInstance, locales: { [locale: string]
     const curLang = langs.find((item) => item.startsWith(lang) || lang.startsWith(item));
 
     i18n.locale(curLang);
-    // @ts-expect-error
-    i18n.extend(locales[curLang]);
+    i18n.extend(locales[curLang || fastify.fallbackLocale]);
 
     // @ts-expect-error
     if (req._i18n_local) i18n.extend(req._i18n_local.phrases);
