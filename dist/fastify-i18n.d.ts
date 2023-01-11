@@ -14,7 +14,7 @@ declare module 'fastify' {
         i18n: Polyglot;
     }
 }
-declare const _default: import("fastify").FastifyPluginAsync<FastifyI18nOptions, import("fastify").RawServerDefault, import("fastify").FastifyTypeProviderDefault>;
+declare const _default: import("fastify").FastifyPluginAsync<FastifyI18nOptions, import("fastify").RawServerDefault, import("fastify").FastifyTypeProviderDefault, import("fastify").FastifyBaseLogger>;
 export default _default;
 export declare const defineI18n: (fastify: FastifyInstance, locales: {
     [locale: string]: object;

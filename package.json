@@ -1,6 +1,6 @@
 {
   "name": "fastify-i18n",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "Internationalization plugin for Fastify. Built upon node-polyglot.",
   "main": "./dist/fastify-i18n.cjs",
   "module": "./dist/fastify-i18n.js",
@@ -16,8 +16,8 @@
     }
   },
   "scripts": {
-    "test": "vitest --coverage --run",
-    "build": "vite build"
+    "build": "vite build",
+    "test": "vitest --run --coverage"
   },
   "repository": {
     "type": "git",
@@ -26,7 +26,8 @@
   "keywords": [
     "fastify",
     "i18n",
-    "internationalization"
+    "l10n",
+    "translation"
   ],
   "author": "Vanilla IceCream",
   "license": "MIT",
@@ -34,17 +35,17 @@
     "url": "https://github.com/Vanilla-IceCream/fastify-i18n/issues"
   },
   "homepage": "https://github.com/Vanilla-IceCream/fastify-i18n#readme",
-  "devDependencies": {
-    "@types/node-polyglot": "^2.4.2",
-    "@vitest/coverage-c8": "^0.26.2",
-    "fastify": "^4.10.2",
-    "typescript": "^4.9.4",
-    "vite": "^4.0.3",
-    "vite-plugin-dts": "^1.7.1",
-    "vitest": "^0.26.2"
-  },
   "dependencies": {
     "fastify-plugin": "^4.4.0",
     "node-polyglot": "^2.4.2"
+  },
+  "devDependencies": {
+    "@types/node-polyglot": "^2.4.2",
+    "@vitest/coverage-c8": "^0.26.3",
+    "fastify": "^4.11.0",
+    "typescript": "^4.9.4",
+    "vite": "^4.0.4",
+    "vite-plugin-dts": "^1.7.1",
+    "vitest": "^0.26.3"
   }
 }

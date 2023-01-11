@@ -25,22 +25,15 @@ export default plugin<FastifyI18nOptions>(
 
     instance.addHook('preParsing', async (req, reply) => {
       const i18n = new Polyglot();
+
       const acceptLanguage = req.headers['accept-language']?.split(',')[0];
-      const localesEntries = Object.entries(options.messages);
+      const lang = acceptLanguage || options.fallbackLocale;
+      const langs = Object.keys(options.messages);
+      const curLang = langs.find((item) => item.startsWith(lang) || lang.startsWith(item));
 
-      for (let i = 0; i < localesEntries.length; i++) {
-        const [locale, message] = localesEntries[i];
-
-        if (locale === acceptLanguage) {
-          i18n.locale(locale);
-          i18n.extend(message);
-        }
-      }
-
-      if (!Object.keys(options.messages).includes(acceptLanguage as string)) {
-        i18n.locale(options.fallbackLocale);
-        i18n.extend(options.messages[options.fallbackLocale]);
-      }
+      i18n.locale(curLang);
+      // @ts-expect-error
+      i18n.extend(options.messages[curLang]);
 
       req.i18n = i18n;
     });
@@ -54,26 +47,19 @@ export default plugin<FastifyI18nOptions>(
 export const defineI18n = (fastify: FastifyInstance, locales: { [locale: string]: object }) => {
   fastify.addHook('preParsing', async (req, reply) => {
     const i18n = new Polyglot();
+
     const acceptLanguage = req.headers['accept-language']?.split(',')[0];
-    const localesEntries = Object.entries(locales);
+    const lang = acceptLanguage || fastify.fallbackLocale;
+    const langs = Object.keys(locales);
+    const curLang = langs.find((item) => item.startsWith(lang) || lang.startsWith(item));
 
-    for (let i = 0; i < localesEntries.length; i++) {
-      const [locale, message] = localesEntries[i];
+    i18n.locale(curLang);
+    // @ts-expect-error
+    i18n.extend(locales[curLang]);
 
-      if (locale === acceptLanguage) {
-        i18n.locale(locale);
-        i18n.extend(message);
-      }
-    }
-
-    if (!Object.keys(locales).includes(acceptLanguage as string)) {
-      i18n.locale(fastify.fallbackLocale);
-      i18n.extend(locales[fastify.fallbackLocale]);
-    }
-
-    // @ts-ignore
+    // @ts-expect-error
     if (req._i18n_local) i18n.extend(req._i18n_local.phrases);
-    // @ts-ignore
+    // @ts-expect-error
     req._i18n_local = i18n;
   });
 };
@@ -87,6 +73,6 @@ export const useI18n = (
   options: UseI18nOptions = { useScope: 'local' },
 ): Polyglot => {
   if (options.useScope === 'global') return request.i18n;
-  // @ts-ignore
+  // @ts-expect-error
   return request._i18n_local;
 };

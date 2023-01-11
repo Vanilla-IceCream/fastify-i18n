@@ -1,34 +1,26 @@
-import d from "fastify-plugin";
+import p from "fastify-plugin";
 import g from "node-polyglot";
-const b = d(
-  async (l, e) => {
-    l.decorate("fallbackLocale", e.fallbackLocale), l.addHook("preParsing", async (c, r) => {
-      var o;
-      const a = new g(), s = (o = c.headers["accept-language"]) == null ? void 0 : o.split(",")[0], t = Object.entries(e.messages);
-      for (let n = 0; n < t.length; n++) {
-        const [i, f] = t[n];
-        i === s && (a.locale(i), a.extend(f));
-      }
-      Object.keys(e.messages).includes(s) || (a.locale(e.fallbackLocale), a.extend(e.messages[e.fallbackLocale])), c.i18n = a;
+const y = p(
+  async (n, a) => {
+    n.decorate("fallbackLocale", a.fallbackLocale), n.addHook("preParsing", async (e, i) => {
+      var t;
+      const c = new g(), s = ((t = e.headers["accept-language"]) == null ? void 0 : t.split(",")[0]) || a.fallbackLocale, l = Object.keys(a.messages).find((o) => o.startsWith(s) || s.startsWith(o));
+      c.locale(l), c.extend(a.messages[l]), e.i18n = c;
     });
   },
   {
     fastify: "4.x",
     name: "fastify-i18n"
   }
-), k = (l, e) => {
-  l.addHook("preParsing", async (c, r) => {
-    var o;
-    const a = new g(), s = (o = c.headers["accept-language"]) == null ? void 0 : o.split(",")[0], t = Object.entries(e);
-    for (let n = 0; n < t.length; n++) {
-      const [i, f] = t[n];
-      i === s && (a.locale(i), a.extend(f));
-    }
-    Object.keys(e).includes(s) || (a.locale(l.fallbackLocale), a.extend(e[l.fallbackLocale])), c._i18n_local && a.extend(c._i18n_local.phrases), c._i18n_local = a;
+), L = (n, a) => {
+  n.addHook("preParsing", async (e, i) => {
+    var t;
+    const c = new g(), s = ((t = e.headers["accept-language"]) == null ? void 0 : t.split(",")[0]) || n.fallbackLocale, l = Object.keys(a).find((o) => o.startsWith(s) || s.startsWith(o));
+    c.locale(l), c.extend(a[l]), e._i18n_local && c.extend(e._i18n_local.phrases), e._i18n_local = c;
   });
-}, m = (l, e = { useScope: "local" }) => e.useScope === "global" ? l.i18n : l._i18n_local;
+}, k = (n, a = { useScope: "local" }) => a.useScope === "global" ? n.i18n : n._i18n_local;
 export {
-  b as default,
-  k as defineI18n,
-  m as useI18n
+  y as default,
+  L as defineI18n,
+  k as useI18n
 };

@@ -2,7 +2,9 @@
 
 Internationalization plugin for Fastify. Built upon [`node-polyglot`](https://github.com/airbnb/polyglot.js).
 
-## Install
+## Installation
+
+Install `fastify-i18n` with your favorite package manager:
 
 ```bash
 $ npm i fastify-i18n
@@ -24,7 +26,7 @@ import i18n, { defineI18n, useI18n } from 'fastify-i18n';
 const { default: i18n, defineI18n, useI18n } = require('fastify-i18n');
 ```
 
-Global scope:
+### Global Scope
 
 ```ts
 import i18n from 'fastify-i18n';
@@ -49,7 +51,7 @@ fastify.get('/api/i18n', async (req, reply) => {
 });
 ```
 
-Local scope:
+### Local Scope
 
 ```ts
 import type { FastifyInstance } from 'fastify';
@@ -80,4 +82,82 @@ export default async (app: FastifyInstance) => {
     });
   });
 };
+```
+
+### Automatic Conversion
+
+#### xx-XX to xx
+
+```ts
+fastify.register(i18n, {
+  fallbackLocale: 'en',
+  messages: {
+    en: { text: 'Text' },
+    ja: { text: 'テキスト' },
+  },
+});
+```
+
+```sh
+$ curl --request GET \
+       --url http://127.0.0.1:3000/api/i18n \
+       --header 'Accept-Language: ja-JP'
+# Output: { text: 'テキスト' } (ja)
+```
+
+#### xx to xx-XX
+
+```ts
+fastify.register(i18n, {
+  fallbackLocale: 'en',
+  messages: {
+    'en-US': { text: 'Text' },
+    'ja-JP': { text: 'テキスト' },
+  },
+});
+```
+
+```sh
+$ curl --request GET \
+       --url http://127.0.0.1:3000/api/i18n \
+       --header 'Accept-Language: ja'
+# Output: { text: 'テキスト' } (ja-JP)
+```
+
+#### Priority
+
+```ts
+fastify.register(i18n, {
+  fallbackLocale: 'en',
+  messages: {
+    'en-US': { text: 'Text' },
+    'zh-CN': { text: '文本' },
+    'zh-TW': { text: '文字' },
+  },
+});
+```
+
+```sh
+$ curl --request GET \
+       --url http://127.0.0.1:3000/api/i18n \
+       --header 'Accept-Language: zh'
+# Output: { text: '文本' } (zh-CN)
+```
+
+```ts
+fastify.register(i18n, {
+  fallbackLocale: 'en',
+  messages: {
+    'en-US': { text: 'Text' },
+    'zh-TW': { text: '文字' },
+    'zh-CN': { text: '文本' },
+  },
+});
+```
+
+```sh
+$ curl --request GET \
+       --url http://127.0.0.1:3000/api/i18n \
+       --header 'Accept-Language: zh'
+# Output: { text: '文字' } (zh-TW)
 ```

@@ -1,13 +1,20 @@
+import type { FastifyInstance } from 'fastify';
 import { beforeEach, afterEach, test, expect } from 'vitest';
 import fastify from 'fastify';
 
 import i18n, { defineI18n, useI18n } from './fastify-i18n';
 
+declare module 'vitest' {
+  export interface TestContext {
+    app: FastifyInstance;
+  }
+}
+
 beforeEach(async (ctx) => {
   ctx.app = fastify();
 });
 
-test('fastify-i18n', async ({ app }) => {
+test.concurrent('fastify-i18n', async ({ app }) => {
   app.register(i18n, {
     fallbackLocale: 'en',
     messages: {
@@ -70,6 +77,94 @@ test('fastify-i18n', async ({ app }) => {
   });
 
   expect(res4.json()).toEqual({ hello: 'こんにちは世界！' });
+});
+
+test.concurrent('fastify-i18n - autoTransform: true - xx-XX', async ({ app }) => {
+  app.register(i18n, {
+    fallbackLocale: 'en',
+    messages: {
+      'en-US': { text: 'Text' },
+      'ja-JP': { text: 'テキスト' },
+    },
+  });
+
+  app.get('/api/i18n', async (req, reply) => {
+    return reply.send({ text: req.i18n.t('text') });
+  });
+
+  app.register(async (router) => {
+    defineI18n(app, {
+      'en-US': { hello: 'Hello, World!' },
+      'ja-JP': { hello: 'こんにちは世界！' },
+    });
+
+    router.get('/api/hello-world', async (req, reply) => {
+      const i18n = useI18n(req);
+      return reply.send({ hello: i18n.t('hello') });
+    });
+  });
+
+  await app.ready();
+
+  const res11 = await app.inject({
+    method: 'GET',
+    url: '/api/i18n',
+    headers: { 'Accept-Language': 'ja' },
+  });
+
+  expect(res11.json()).toEqual({ text: 'テキスト' });
+
+  const res12 = await app.inject({
+    method: 'GET',
+    url: '/api/hello-world',
+    headers: { 'Accept-Language': 'ja' },
+  });
+
+  expect(res12.json()).toEqual({ hello: 'こんにちは世界！' });
+});
+
+test.concurrent('fastify-i18n - autoTransform: true - xx', async ({ app }) => {
+  app.register(i18n, {
+    fallbackLocale: 'en',
+    messages: {
+      en: { text: 'Text' },
+      ja: { text: 'テキスト' },
+    },
+  });
+
+  app.get('/api/i18n', async (req, reply) => {
+    return reply.send({ text: req.i18n.t('text') });
+  });
+
+  app.register(async (router) => {
+    defineI18n(app, {
+      en: { hello: 'Hello, World!' },
+      ja: { hello: 'こんにちは世界！' },
+    });
+
+    router.get('/api/hello-world', async (req, reply) => {
+      const i18n = useI18n(req);
+      return reply.send({ hello: i18n.t('hello') });
+    });
+  });
+
+  await app.ready();
+
+  const res11 = await app.inject({
+    method: 'GET',
+    url: '/api/i18n',
+    headers: { 'Accept-Language': 'ja-JP' },
+  });
+
+  expect(res11.json()).toEqual({ text: 'テキスト' });
+
+  const res12 = await app.inject({
+    method: 'GET',
+    url: '/api/hello-world',
+    headers: { 'Accept-Language': 'ja-JP' },
+  });
+
+  expect(res12.json()).toEqual({ hello: 'こんにちは世界！' });
 });
 
 afterEach(async (ctx) => {
