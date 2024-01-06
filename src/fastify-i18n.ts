@@ -4,9 +4,7 @@ import Polyglot from 'node-polyglot';
 
 type FastifyI18nOptions = {
   fallbackLocale: string;
-  messages: {
-    [locale: string]: object;
-  };
+  messages: Record<string, unknown>;
 };
 
 declare module 'fastify' {
@@ -28,11 +26,12 @@ export default plugin<FastifyI18nOptions>(
 
       const acceptLanguage = req.headers['accept-language']?.split(',')[0];
       const lang = acceptLanguage || options.fallbackLocale;
-      const langs = Object.keys(options.messages);
+      const messages = normalize(options.messages);
+      const langs = Object.keys(messages);
       const curLang = langs.find((item) => item.startsWith(lang) || lang.startsWith(item));
 
       i18n.locale(curLang);
-      i18n.extend(options.messages[curLang || options.fallbackLocale]);
+      i18n.extend(messages[curLang || options.fallbackLocale]);
 
       req.i18n = i18n;
     });
@@ -49,11 +48,12 @@ export const defineI18n = (fastify: FastifyInstance, locales: { [locale: string]
 
     const acceptLanguage = req.headers['accept-language']?.split(',')[0];
     const lang = acceptLanguage || fastify.fallbackLocale;
-    const langs = Object.keys(locales);
+    const messages = normalize(locales);
+    const langs = Object.keys(messages);
     const curLang = langs.find((item) => item.startsWith(lang) || lang.startsWith(item));
 
     i18n.locale(curLang);
-    i18n.extend(locales[curLang || fastify.fallbackLocale]);
+    i18n.extend(messages[curLang || fastify.fallbackLocale]);
 
     // @ts-expect-error
     if (req._i18n_local) i18n.extend(req._i18n_local.phrases);
@@ -74,3 +74,15 @@ export const useI18n = (
   // @ts-expect-error
   return request._i18n_local;
 };
+
+function normalize(locales: Record<string, any>) {
+  const normalized = Object.entries(locales).map(([key, val]) => [
+    // @ts-ignore
+    key.split('/').pop().split('.').slice(0, -1).join('.') || key,
+
+    // import.meta.glob('LOCALE_FILES', { eager: true })
+    val.default ? val.default : val,
+  ]);
+
+  return Object.fromEntries(normalized);
+}

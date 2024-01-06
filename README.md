@@ -74,11 +74,11 @@ export default async (app: FastifyInstance) => {
     const i18n = useI18n(req);
 
     return reply.send({
-      // local scope
-      hello: i18n.t('hello'),
-
       // global scope
       text: req.i18n.t('text'),
+
+      // local scope
+      hello: i18n.t('hello'),
     });
   });
 };
@@ -160,4 +160,19 @@ $ curl --request GET \
        --url http://127.0.0.1:3000/api/i18n \
        --header 'Accept-Language: zh'
 # Output: { text: '文字' } (zh-TW)
+```
+
+### Glob Import (Vite Only)
+
+```ts
+// global
+fastify.register(i18n, {
+  fallbackLocale: 'en-US',
+  messages: messages: import.meta.glob(['~/locales/*.ts'], { eager: true }),
+});
+```
+
+```ts
+// local scope
+defineI18n(app, import.meta.glob(['./locales/*.ts'], { eager: true }));
 ```
