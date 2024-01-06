@@ -15,5 +15,9 @@ export default defineConfig({
       },
     },
   },
-  plugins: [dts()],
+  plugins: [
+    dts({
+      exclude: ['**/__tests__/**'],
+    }),
+  ],
 });

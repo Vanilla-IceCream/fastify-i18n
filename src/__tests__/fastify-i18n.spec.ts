@@ -2,7 +2,7 @@ import type { FastifyInstance } from 'fastify';
 import { beforeEach, afterEach, test, expect } from 'vitest';
 import fastify from 'fastify';
 
-import i18n, { defineI18n, useI18n } from './fastify-i18n';
+import i18n, { defineI18n, useI18n } from '../fastify-i18n';
 
 declare module 'vitest' {
   export interface TestContext {
