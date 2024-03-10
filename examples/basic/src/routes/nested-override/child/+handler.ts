@@ -6,18 +6,17 @@ export default async (app: FastifyInstance) => {
 
   /*
   $ curl --request GET \
-         --url http://127.0.0.1:3000/api/hello-i18n \
+         --url http://127.0.0.1:3000/api/nested-override/child \
          --header 'Accept-Language: ja-JP'
   */
   app.get('', async (request, reply) => {
     const i18n = useI18n(request);
 
     return reply.send({
-      // global scope
       text: request.i18n.t('text'),
-
-      // local scope (will overwrite the upper level)
-      hello: i18n.t('hello', { name: 'Fastify' }),
+      pineapple: i18n.t('PINEAPPLE'),
+      apple: i18n.t('APPLE'),
+      pen: i18n.t('PEN'),
     });
   });
 };
