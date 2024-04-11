@@ -10,6 +10,7 @@ type FastifyI18nOptions = {
 declare module 'fastify' {
   interface FastifyInstance {
     fallbackLocale: FastifyI18nOptions['fallbackLocale'];
+    i18n: Polyglot;
   }
 
   interface FastifyRequest {
@@ -19,10 +20,12 @@ declare module 'fastify' {
 
 export default plugin<FastifyI18nOptions>(
   async (instance, options) => {
+    const i18n = new Polyglot();
     instance.decorate('fallbackLocale', options.fallbackLocale);
+    instance.decorate('i18n', i18n);
 
     instance.addHook('preParsing', async (req, reply) => {
-      const i18n = new Polyglot();
+      const { i18n } = instance;
 
       const acceptLanguage = req.headers['accept-language']?.split(',')[0];
       const lang = acceptLanguage || options.fallbackLocale;
@@ -44,7 +47,7 @@ export default plugin<FastifyI18nOptions>(
 
 export const defineI18n = (fastify: FastifyInstance, locales: { [locale: string]: object }) => {
   fastify.addHook('preParsing', async (req, reply) => {
-    const i18n = new Polyglot();
+    const { i18n } = fastify;
 
     const acceptLanguage = req.headers['accept-language']?.split(',')[0];
     const lang = acceptLanguage || fastify.fallbackLocale;
