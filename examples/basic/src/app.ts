@@ -1,7 +1,7 @@
 import fastify from 'fastify';
 
-import router from '~/plugins/router';
 import i18n from '~/plugins/i18n';
+import router from '~/plugins/router';
 
 export default () => {
   const app = fastify({
@@ -12,8 +12,8 @@ export default () => {
     },
   });
 
-  app.register(router);
   app.register(i18n);
+  app.register(router);
 
   return app;
 };
