@@ -176,3 +176,35 @@ fastify.register(i18n, {
 // local scope
 defineI18n(app, import.meta.glob(['./locales/*.ts'], { eager: true }));
 ```
+
+### Type-safe Resources
+
+Coming soon...
+
+## V2 Migration Guide
+
+This guide is intended to help with migration from `fastify-i18n` v1 to v2.
+
+V2 no longer distinguishes between scopes; each scope's language will override the previous layer's key with the same scope. So, `useI18n` is no longer needed; you can now access the instance of `node-polyglot` from `fastify.i18n` or `request.i18n`.
+
+```diff
+app.get('/hello-world', async (req, reply) => {
+- const i18n = useI18n(req);
+
+  return reply.send({
+    // global scope
+    text: req.i18n.t('text'),
+
+    // local scope
+-   hello: i18n.t('hello'),
++   hello: req.i18n.t('hello'),
+  });
+});
+```
+
+Please note that i18n must be registered before your routes, otherwise the global scope will trigger only at the last layer unless you require it.
+
+```ts
+fastify.register(i18n);
+fastify.register(router);
+```
