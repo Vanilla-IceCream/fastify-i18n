@@ -168,7 +168,7 @@ $ curl --request GET \
 // global
 fastify.register(i18n, {
   fallbackLocale: 'en-US',
-  messages: messages: import.meta.glob(['~/locales/*.ts'], { eager: true }),
+  messages: import.meta.glob(['~/locales/*.ts'], { eager: true }),
 });
 ```
 
@@ -179,7 +179,7 @@ defineI18n(app, import.meta.glob(['./locales/*.ts'], { eager: true }));
 
 ### Type-safe Resources
 
-Coming soon...
+[Coming soon...](./type-safe-resources/README.md)
 
 ## V2 Migration Guide
 
