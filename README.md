@@ -208,3 +208,7 @@ Please note that i18n must be registered before your routes, otherwise the globa
 fastify.register(i18n);
 fastify.register(router);
 ```
+
+## V3 Migration Guide
+
+Support Fastify v5

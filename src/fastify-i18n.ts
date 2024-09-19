@@ -40,7 +40,7 @@ export default plugin<FastifyI18nOptions>(
     });
   },
   {
-    fastify: '4.x',
+    fastify: '5.x',
     name: 'fastify-i18n',
   },
 );
