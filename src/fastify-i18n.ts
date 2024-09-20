@@ -80,11 +80,8 @@ export const useI18n = (
 
 function normalize(locales: Record<string, any>) {
   const normalized = Object.entries(locales).map(([key, val]) => [
-    // @ts-ignore
-    key.split('/').pop().split('.').slice(0, -1).join('.') || key,
-
-    // import.meta.glob('LOCALE_FILES', { eager: true })
-    val.default ? val.default : val,
+    key.split('/').pop()?.split('.').slice(0, -1).join('.') || key,
+    val.default ? val.default : val, // Support Vite's `import.meta.glob('LOCALE_FILES', { eager: true })`
   ]);
 
   return Object.fromEntries(normalized);
