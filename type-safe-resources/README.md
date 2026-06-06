@@ -17,10 +17,12 @@ import { defineI18n, useI18n } from 'fastify-i18n';
 The default exported module will be used for the new API.
 
 ```ts
+import i18n from 'fastify-i18n';
+
 import i18n, { defineLocale, useLocale } from 'fastify-i18n';
 ```
 
-Global Scope:
+## Global Scope
 
 ```ts
 // ~/plugins/i18n.ts
@@ -28,25 +30,7 @@ import i18n from 'fastify-i18n';
 
 fastify.register(i18n, {
   fallbackLocale: 'en-US',
-  messages: import.meta.glob(['~/locales/*.ts', '!~/locales/index.ts'], { eager: true }),
-});
-
-// ~/locales/index.ts
-import { useLocale } from 'fastify-i18n';
-
-import type enUS from './en-US'; // This uses the same value as `fallbackLocale` for type reference
-
-export default () => useLocale<typeof enUS>();
-
-/* ---------- or ---------- */
-
-import i18n from 'fastify-i18n';
-
-import type enUS from './en-US'; // This uses the same value as `fallbackLocale` for type reference
-
-fastify.register<typeof enUS>(i18n, {
-  fallbackLocale: 'en-US',
-  messages: import.meta.glob(['~/locales/*.ts', '!~/locales/index.ts'], { eager: true }),
+  messages: import.meta.glob(['~/locales/*.ts'], { eager: true }),
 });
 ```
 
@@ -65,25 +49,6 @@ export default {
 ```
 
 ```ts
-import useGlobalLocale from '~/locales';
-
-export default async (app: FastifyInstance) => {
-  const globalLocale = useGlobalLocale();
-
-  /*
-  curl --request GET \
-    --url http://127.0.0.1:3000/api/hello-world \
-    --header 'accept-language: zh-TW'
-  */
-  app.get('/hello-world', async (request, reply) => {
-    return reply.send({
-      welcome: globalLocale.WELCOME,
-    });
-  });
-};
-
-/* ---------- or ---------- */
-
 export default async (app: FastifyInstance) => {
   /*
   curl --request GET \
@@ -98,4 +63,52 @@ export default async (app: FastifyInstance) => {
 };
 ```
 
-Local Scope:
+## Local Scope
+
+```ts
+// ~/routes/<FEATURE_NAME>/+hook.ts
+import plugin from 'fastify-plugin';
+import i18n from 'fastify-i18n';
+
+export default plugin(async (app) => {
+  app.register(i18n, {
+    name: 'myFeature',
+    messages: import.meta.glob(['./locales/*.ts'], { eager: true }),
+  });
+});
+```
+
+```ts
+// ~/routes/<FEATURE_NAME>/+handler.ts
+export default async (app: FastifyInstance) => {
+  app.get('', async (request, reply) => {
+    return reply.send({
+      welcome: request.i18n.myFeature.WELCOME,
+    });
+  });
+};
+```
+
+```ts
+// ~/routes/<FEATURE_NAME>/children/+hook.ts
+import plugin from 'fastify-plugin';
+import i18n from 'fastify-i18n';
+
+export default plugin(async (app) => {
+  app.register(i18n, {
+    name: 'myFeatureChildren',
+    messages: import.meta.glob(['./locales/*.ts'], { eager: true }),
+  });
+});
+```
+
+```ts
+// ~/routes/<FEATURE_NAME>/children/+handler.ts
+export default async (app: FastifyInstance) => {
+  app.get('', async (request, reply) => {
+    return reply.send({
+      welcome: request.i18n.myFeatureChildren.WELCOME,
+    });
+  });
+};
+```
