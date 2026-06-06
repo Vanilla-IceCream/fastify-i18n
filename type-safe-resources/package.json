@@ -1,0 +1,23 @@
+{
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@fastify/one-line-logger": "^2.1.0",
+    "fastify": "^5.8.5",
+    "fastify-plugin": "^5.1.0",
+    "message-interpolation": "^1.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.13.1",
+    "process-envify": "^2.0.0",
+    "typescript": "^6.0.3",
+    "vite": "^8.0.16",
+    "vite-plugin-fastify": "^1.2.6",
+    "vite-plugin-fastify-routes": "^1.1.3"
+  }
+}
