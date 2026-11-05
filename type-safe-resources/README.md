@@ -115,6 +115,32 @@ export default async (app: FastifyInstance) => {
 };
 ```
 
+## Message Interpolation
+
+```ts
+// src/locales/en-US.ts
+export default {
+  HELLO: `Hello, {msg}!`,
+};
+
+// src/locales/ja-JP.ts
+export default {
+  HELLO: `こんにちは、{msg}!`,
+};
+```
+
+```ts
+import mi from 'message-interpolation';
+
+export default async (app: FastifyInstance) => {
+  app.get('/hello-world', async (request, reply) => {
+    return reply.send({
+      hello: mi(request.i18n.HELLO, { msg: 'Fastify' }),
+    });
+  });
+};
+```
+
 ## Type Definition
 
 ```ts
