@@ -184,3 +184,31 @@ Scan the main locales folder and all locales folders under the routes, and autom
 ```
 
 It covers checking whether the key of each language file is consistent.
+
+### Automatic type annotation
+
+Type annotations are automatically generated based on `fallbackLocale`. The annotation content is the value of the key, which is used for primitive value hints for language variables in the editor.
+
+This will generally result in the following:
+
+```ts
+export interface I18nBase {
+  /** Welcome! */
+  WELCOME: string;
+
+  /** Hello, {msg}! */
+  HELLO: string;
+}
+```
+
+Then hover your mouse cursor over `WELCOME` in the editor to view the primitive value.
+
+```ts
+export default async (app: FastifyInstance) => {
+  app.get('/hello-world', async (request, reply) => {
+    return reply.send({
+      welcome: request.i18n.WELCOME,
+    });
+  });
+};
+```
