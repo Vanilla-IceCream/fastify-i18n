@@ -65,6 +65,8 @@ export default async (app: FastifyInstance) => {
 
 ## Local Scope
 
+The Local Scope is optional and the nested structure can be used directly in the Global Scope.
+
 ```ts
 // ~/routes/<FEATURE_NAME>/+hook.ts
 import plugin from 'fastify-plugin';
@@ -107,8 +109,52 @@ export default plugin(async (app) => {
 export default async (app: FastifyInstance) => {
   app.get('', async (request, reply) => {
     return reply.send({
-      welcome: request.i18n.myFeatureChildren.WELCOME,
+      welcome: request.i18n.myFeature.myFeatureChildren.WELCOME,
     });
   });
 };
 ```
+
+## Type Definition
+
+```ts
+import 'fastify';
+import type { I18n } from './i18n';
+
+declare module 'fastify' {
+  interface FastifyRequest {
+    i18n: I18n | null;
+  }
+}
+```
+
+```ts
+import type { I18nBase } from './base';
+import type { I18nMyFeature } from './extra';
+
+export interface I18n extends I18nBase, I18nMyFeature {}
+
+// ---
+
+export interface I18nBase {
+  WELCOME: string;
+}
+
+// ---
+
+export interface I18nMyFeature {
+  myFeature: {
+    WELCOME: string;
+  };
+}
+```
+
+### Automatic type definition
+
+Scan the main locales folder and all locales folders under the routes, and automatically create type files.
+
+```ts
+// vite.config.ts
+```
+
+It covers checking whether the key of each language file is consistent.
